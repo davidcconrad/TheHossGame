@@ -1,0 +1,7 @@
+<Project>
+    <ItemGroup>
+        <PackageVersion Include="Pulumi" Version="3.*" />
+        <PackageVersion Include="Pulumi.AzureNative" Version="1.*" />
+    </ItemGroup>
+</Project>
+
