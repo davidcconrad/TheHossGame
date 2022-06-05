@@ -18,9 +18,9 @@ jobs:
       - name: OIDC Login to Azure Public Cloud with AzPowershell (enableAzPSSession true)
         uses: azure/login@v1
         with:
-          client-id: 20a9c0dd-311b-4b97-8d29-c642c3490c70
-          tenant-id: 670ae364-91f7-4467-b703-9897c56df8e6
-          subscription-id: 5c287342-053b-4a49-8a70-0ac22a40abb9 
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  
           
       - uses: pulumi/actions@v3
         with:
