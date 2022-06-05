@@ -35,9 +35,8 @@ function Update-FilesContent {
     )
     Begin {}
     Process {
-        Write-Host $_.FullName
         $Content = Get-Content $_
-        $NewContent = $Content.Replace("TheHossGame", $NewName)
+        $NewContent = $Content.Replace($CurrentName, $NewName)
         Set-Content -Path $_ $NewContent
     }
     End {}
