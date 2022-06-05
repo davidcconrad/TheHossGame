@@ -1,8 +1,11 @@
 name: Deploy Pulumi
 on:
-  - push
+  push:
+    branches:
+      - main
+      
 jobs:
-  preview:
+  deployment:
     name: Preview
     runs-on: ubuntu-latest
     environment: Dev
