@@ -30,7 +30,7 @@ New-AzADServicePrincipal -ApplicationId $clientId
 $objectId = (Get-AzADServicePrincipal -DisplayName $repo).Id
 New-AzRoleAssignment -ObjectId $objectId -RoleDefinitionName Contributor -ResourceGroupName $resourceGroupName
 $subscriptionId = (Get-AzContext).Subscription.Id
-$tenantId = (Get-AzContext).Subscription
+$tenantId = (Get-AzContext).Subscription.$tenantId
 
 $uri = "https://graph.microsoft.com/beta/applications/$appObjectId/federatedIdentityCredentials"
 $payload = "{`"name`":`"$repo`",`"issuer`":`"https://token.actions.githubusercontent.com`",`"subject`":`"repo:$organization/$repo`:ref:refs/heads/$branch`",`"description`":`"Testing`",`"audiences`":[`"api://AzureADTokenExchange`"]}" 
@@ -38,5 +38,5 @@ $payload = "{`"name`":`"$repo`",`"issuer`":`"https://token.actions.githubusercon
 Invoke-AzRestMethod -Method POST -Uri $uri -Payload $payload
 
 gh secret set -a actions AZURE_CLIENT_ID -b "$clientId"
-gh secret set -a actions AZURE_TENANT_ID -b "$subscriptionId"
-gh secret set -a actions AZURE_SUBSCRIPTION_ID -b "$tenantId"	
+gh secret set -a actions AZURE_TENANT_ID -b "$tenantId"
+gh secret set -a actions AZURE_SUBSCRIPTION_ID -b "$subscriptionId" 	
