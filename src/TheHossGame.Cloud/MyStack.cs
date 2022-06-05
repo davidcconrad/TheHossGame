@@ -8,12 +8,14 @@ using Pulumi.AzureNative.Web.Inputs;
 
 class MyStack : Stack
 {
+  private const string WebAppName = "todo-list";
+
   public MyStack()
   {
     // Create an Azure Resource Group
     var resourceGroup = new ResourceGroup("resourceGroup");
 
-    var appService = new AppServicePlan("asp", new AppServicePlanArgs
+    var appServicePlan = new AppServicePlan("asp", new AppServicePlanArgs
     {
       ResourceGroupName = resourceGroup.Name,
       Kind = "App",
@@ -26,36 +28,31 @@ class MyStack : Stack
         Tier = "Premium"
       }
     });
-  }
 
-  private static StorageAccount CreateStorageAccount(ResourceGroup resourceGroup)
-  {
-
-    // Create an Azure resource (Storage Account)
-    return new StorageAccount("sa", new StorageAccountArgs
+    var webApp = new WebApp(WebAppName, new WebAppArgs
     {
       ResourceGroupName = resourceGroup.Name,
-      Sku = new SkuArgs
-      {
-        Name = SkuName.Standard_LRS
-      },
-      Kind = Kind.StorageV2
+      Location = appServicePlan.Location,
+      ServerFarmId = appServicePlan.Id,
+      HttpsOnly = true
     });
+
+    this.PublishingUserName = GetWebAppPublishingKeys(resourceGroup, webApp);
+    this.ResourceGroupName = resourceGroup.Name.Apply(resource => resource);
   }
 
   [Output]
-  public Output<string> PrimaryStorageKey { get; set; }
+  public Output<string> PublishingUserName { get; set; }
 
   [Output]
-  public Output<string> StaticEndpoint { get; set; }
+  public Output<string> ResourceGroupName { get; set; }
 
-  private static async Task<string> GetStorageAccountPrimaryKey(string resourceGroupName, string accountName)
+  private static Output<string> GetWebAppPublishingKeys(ResourceGroup resourceGroup, WebApp webApp)
   {
-    var accountKeys = await ListStorageAccountKeys.InvokeAsync(new ListStorageAccountKeysArgs
+    return ListWebAppPublishingCredentials.Invoke(new ListWebAppPublishingCredentialsInvokeArgs
     {
-      ResourceGroupName = resourceGroupName,
-      AccountName = accountName
-    });
-    return accountKeys.Keys[0].Value;
+      ResourceGroupName = resourceGroup.Name,
+      Name = webApp.Name
+    }).Apply(webApp => webApp.PublishingUserName);
   }
 }
