@@ -29,7 +29,6 @@ jobs:
         with:
           command: preview
           stack-name: thehossgame
-          comment-on-pr: true
           work-dir: src/TheHossGame.Cloud
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
