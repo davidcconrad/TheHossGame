@@ -48,8 +48,11 @@ jobs:
             $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN
             $env:ACTIONS_ID_TOKEN_REQUEST_URL
             Write-Host '👉 Calling OIDC token endpoint'
-            curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
+            $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
+            $azureOidcToken = $azureTokenResponse?.value
+            Write-Host $azureOidcToken
             Write-Host '👉 Executing pulumi preview'
+            pulumi config set azure-native:clientSecret $azureOidcToken --secret
             pulumi preview
           azPSVersion: latest
         env:
