@@ -53,7 +53,7 @@ jobs:
             Write-Host '👉 Setting client secret'
             pulumi config set azure-native:clientSecret $env:ARM_CLIENT_SECRET --secret
             Write-Host '👉 Setting client id'
-            pulumi config set azure-native:clientId $env:AZURE_CLIENT_ID
+            pulumi config set azure-native:clientId $env:ARM_CLIENT_ID
             Write-Host '👉 Setting tenant id'
             pulumi config set azure-native:tenantId $env:ARM_TENANT_ID
             Write-Host '👉 Setting subscription id'
