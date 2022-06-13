@@ -35,6 +35,28 @@ jobs:
           az group list
           az account show --query id -o tsv
 
+
+      - name: Azure PowerShell Action
+        uses: Azure/powershell@v1
+        with:
+          # Specify the Az PowerShell script here.
+          inlineScript: |
+            cd src/TheHossGame.Cloud
+            ls
+            dotnet build -nologo 
+            pulumi stack select thehossgame
+            $env:servicePrincipalId, $env:servicePrincipalKey, $env:tenantId
+            curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
+            pulumi preview 
+          # Azure PS version to be used to execute the script, example: 1.8.0, 2.8.0, 3.4.0. To use the latest version, specify "latest".
+          azPSVersion: 
+          # Select the value of the ErrorActionPreference variable for executing the script. Options: stop, continue, silentlyContinue. Default is Stop.
+          errorActionPreference: # optional, default is Stop
+          # If this is true, this task will fail if any errors are written to the error pipeline, or if any data is written to the Standard Error stream.
+          failOnStandardError: # optional, default is false
+          # Used to pull Az module from Azure/az-ps-module-versions.  Since there's a default, this is typically not supplied by the user.
+
+
       # - uses: pulumi/actions@v3
       #   with:
       #     command: preview
@@ -50,6 +72,7 @@ jobs:
           ls
           dotnet build -nologo 
           pulumi stack select thehossgame
+          $env:servicePrincipalId, $env:servicePrincipalKey, $env:tenantId
           curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
           pulumi preview 
         env:
@@ -57,4 +80,3 @@ jobs:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.GITHUB_TOKEN }}
