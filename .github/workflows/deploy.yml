@@ -29,12 +29,6 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
-      - name: "Run az commands"
-        run: |
-          az account show
-          az group list
-          az account show --query id -o tsv
-
       - name: Azure PowerShell Action
         uses: Azure/powershell@v1
         with:
@@ -43,16 +37,19 @@ jobs:
             cd src/TheHossGame.Cloud
             Write-Host '👉 Selecting stack'
             pulumi stack select thehossgame
-            Write-Host '👉 Printing environment variables'
-            $env:servicePrincipalId, $env:servicePrincipalKey, $env:tenantId
-            $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN
-            $env:ACTIONS_ID_TOKEN_REQUEST_URL
+
             Write-Host '👉 Calling OIDC token endpoint'
             $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
             $azureOidcToken = $azureTokenResponse?.value
-            Write-Host $azureOidcToken
-            Write-Host '👉 Executing pulumi preview'
             $env:ARM_CLIENT_SECRET = $azureOidcToken
+
+            Write-Host '👉 Printing environment variables'
+            Write-Host 'azureOidcToken: '$azureOidcToken
+            Write-Host 'ARM_CLIENT_SECRET: '$env:ARM_CLIENT_SECRET
+            Write-Host 'AZURE_TENANT_ID: '$env:AZURE_TENANT_ID
+            Write-Host 'AZURE_SUBSCRIPTION_ID: '$env:AZURE_SUBSCRIPTION_ID
+
+            Write-Host '👉 Executing pulumi preview'
             # pulumi config set azure-native:clientSecret $azureOidcToken --secret
             pulumi preview
           azPSVersion: latest
@@ -60,6 +57,9 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
           ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # - uses: pulumi/actions@v3
       #   with:
@@ -70,17 +70,17 @@ jobs:
       #     PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       #     ARM_SKIP_CREDENTIALS_VALIDATION: true
 
-      - name: "Run Pulumi"
-        run: |
-          cd src/TheHossGame.Cloud
-          ls
-          dotnet build -nologo 
-          pulumi stack select thehossgame
-          $env:servicePrincipalId, $env:servicePrincipalKey, $env:tenantId
-          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
-          pulumi preview
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # - name: "Run Pulumi"
+      #   run: |
+      #     cd src/TheHossGame.Cloud
+      #     ls
+      #     dotnet build -nologo 
+      #     pulumi stack select thehossgame
+      #     $env:servicePrincipalId, $env:servicePrincipalKey, $env:tenantId
+      #     curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
+      #     pulumi preview
+      #   env:
+      #     PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      #     ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      #     ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      #     ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
