@@ -52,7 +52,8 @@ jobs:
             $azureOidcToken = $azureTokenResponse?.value
             Write-Host $azureOidcToken
             Write-Host '👉 Executing pulumi preview'
-            pulumi config set azure-native:clientSecret $azureOidcToken --secret
+            $env:ARM_CLIENT_SECRET = $azureOidcToken
+            # pulumi config set azure-native:clientSecret $azureOidcToken --secret
             pulumi preview
           azPSVersion: latest
         env:
