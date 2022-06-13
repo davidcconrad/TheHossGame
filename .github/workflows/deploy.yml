@@ -33,6 +33,7 @@ jobs:
         run: |
           az account show
           az group list
+          az account show --query id -o tsv
 
       # - uses: pulumi/actions@v3
       #   with:
@@ -49,6 +50,11 @@ jobs:
           ls
           dotnet build -nologo 
           pulumi stack select thehossgame
-          pulumi preview
+          pulumi preview --non-
+          curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_CLIENT_SECRET:
