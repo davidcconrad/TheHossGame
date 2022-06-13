@@ -48,6 +48,7 @@ jobs:
           cd src/TheHossGame.Cloud
           ls
           dotnet build -nologo 
+          pulumi stack select thehossgame
           pulumi preview
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
