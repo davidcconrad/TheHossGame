@@ -41,7 +41,7 @@ jobs:
             Write-Host '👉 Calling OIDC token endpoint'
             $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
             $azureOidcToken = $azureTokenResponse?.value
-            $env:ARM_CLIENT_SECRET = $azureOidcToken
+            $env:ARM_CLIENT_SECRET = $azureOidcToken | ConvertFrom-Json 
 
             Write-Host '👉 Printing environment variables'
             Write-Host "azureTokenResponse: "$azureTokenResponse
