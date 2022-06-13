@@ -50,10 +50,13 @@ jobs:
             Write-Host "AZURE_TENANT_ID: "$env:AZURE_TENANT_ID
             Write-Host "AZURE_SUBSCRIPTION_ID: "$env:AZURE_SUBSCRIPTION_ID
 
-            Write-Host '👉 Executing pulumi preview'
+            Write-Host '👉 Setting client secret'
             pulumi config set azure-native:clientSecret $env:ARM_CLIENT_SECRET --secret
+            Write-Host '👉 Setting client id'
             pulumi config set azure-native:clientId $env:AZURE_CLIENT_ID
+            Write-Host '👉 Setting tenant id'
             pulumi config set azure-native:tenantId $env:ARM_TENANT_ID
+            Write-Host '👉 Setting subscription id'
             pulumi config set azure-native:subscriptionId $env:ARM_SUBSCRIPTION_ID
             pulumi preview
           azPSVersion: latest
