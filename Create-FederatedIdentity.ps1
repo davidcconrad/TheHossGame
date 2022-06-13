@@ -30,10 +30,11 @@ New-AzADServicePrincipal -ApplicationId $clientId
 $objectId = (Get-AzADServicePrincipal -DisplayName $repo).Id
 New-AzRoleAssignment -ObjectId $objectId -RoleDefinitionName Contributor -ResourceGroupName $resourceGroupName
 $subscriptionId = (Get-AzContext).Subscription.Id
-$tenantId = (Get-AzContext).Subscription.$tenantId
+$tenantId = (Get-AzContext).Subscription.TenantId
 
 $uri = "https://graph.microsoft.com/beta/applications/$appObjectId/federatedIdentityCredentials"
-$payload = "{`"name`":`"$repo`",`"issuer`":`"https://token.actions.githubusercontent.com`",`"subject`":`"repo:$organization/$repo`:ref:refs/heads/$branch`",`"description`":`"Testing`",`"audiences`":[`"api://AzureADTokenExchange`"]}" 
+# $payload = "{`"name`":`"$repo`",`"issuer`":`"https://token.actions.githubusercontent.com`",`"subject`":`"repo:$organization/$repo`:ref:refs/heads/$branch`",`"description`":`"Testing`",`"audiences`":[`"api://AzureADTokenExchange`"]}" 
+$payload = "{`"name`":`"perEnvironment`",`"issuer`":`"https://token.actions.githubusercontent.com`",`"subject`":`"repo:$organization/$repo`:environment`:Dev`",`"description`":`"Testing`",`"audiences`":[`"api://AzureADTokenExchange`"]}" 
 
 Invoke-AzRestMethod -Method POST -Uri $uri -Payload $payload
 
