@@ -51,7 +51,7 @@ jobs:
             Write-Host "AZURE_SUBSCRIPTION_ID: "$env:AZURE_SUBSCRIPTION_ID
 
             Write-Host '👉 Executing pulumi preview'
-            # pulumi config set azure-native:clientSecret $env:ARM_CLIENT_SECRET --secret
+            pulumi config set azure-native:clientSecret $env:ARM_CLIENT_SECRET --secret
             pulumi preview
           azPSVersion: latest
         env:
