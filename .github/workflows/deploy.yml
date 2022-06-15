@@ -39,6 +39,7 @@ jobs:
             pulumi stack select thehossgame
 
             Write-Host '👉 Calling OIDC token endpoint'
+            Write-Host "ACTIONS_ID_TOKEN_REQUEST_URL: "$env:ACTIONS_ID_TOKEN_REQUEST_URL
             $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "https://thehossgame.free.beeceptor.com/&audience=api://AzureADTokenExchange"
             $azureOidcToken = $azureTokenResponse | ConvertFrom-Json
             $env:ARM_CLIENT_SECRET = $azureOidcToken.value 
