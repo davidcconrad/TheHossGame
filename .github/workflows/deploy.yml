@@ -1,4 +1,4 @@
-name: Deploy Pulumi
+name: Deploy infrastrucure
 on:
   push:
     branches: [main]

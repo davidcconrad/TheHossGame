@@ -1,4 +1,4 @@
-name: Preview Pulumi
+name: Preview infrastructure changes
 on:
   pull_request:
     types: [opened, reopened]
