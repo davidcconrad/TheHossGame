@@ -55,7 +55,7 @@ jobs:
             Write-Host "ACTIONS_ID_TOKEN_REQUEST_URL: "$env:ACTIONS_ID_TOKEN_REQUEST_URL
 
             Write-Host '👉 Setting client secret'
-            pulumi config set azure-native:clientSecret $azureTokenResponse.value --secret
+            pulumi config set azure-native:clientSecret ($azureTokenResponse | ConvertFrom-Json).value --secret
             Write-Host '👉 Setting client id'
             pulumi config set azure-native:clientId $env:ARM_CLIENT_ID
             Write-Host '👉 Setting tenant id'
