@@ -1,4 +1,4 @@
-name: Deploy Pulumi
+name: Preview Pulumi
 on:
   pull_request:
     types: [opened, reopened]
@@ -8,7 +8,7 @@ jobs:
   deployment:
     name: Preview
     runs-on: ubuntu-latest
-    
+
     permissions:
       id-token: write
       contents: read
