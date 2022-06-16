@@ -23,7 +23,7 @@ jobs:
 
       - uses: pulumi/actions@v3
         with:
-          command: preview
+          command: up
           stack-name: thehossgame
           work-dir: src/TheHossGame.Cloud
         env:
